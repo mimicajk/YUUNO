@@ -2,104 +2,66 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YUUNO - Home</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="home-page">
 
-<!-- ============================= -->
-<!-- NAVBAR -->
-<!-- ============================= -->
 <nav class="navbar">
     <div class="navbar-logo">YUUNO</div>
-
     <div class="navbar-links">
         <a href="#" class="active">🏠 Inicio</a>
         <a href="#">💬 Chat</a>
         <a href="#">👤 Perfil</a>
     </div>
-
     <div class="user-info">
         <span id="usernameDisplay"></span>
         <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
     </div>
 </nav>
 
-<!-- ============================= -->
-<!-- CONTENIDO PRINCIPAL -->
-<!-- ============================= -->
 <div class="home-content">
-    
     <div class="create-post">
         <div class="post-avatar" id="userAvatar">U</div>
         <input type="text" id="postInput" placeholder="¿Qué estás pensando?">
         <button onclick="crearPost()" class="btn-post">Publicar</button>
     </div>
-
-    <div class="feed" id="feed">
-        <!-- Posts aquí -->
-    </div>
-
+    <div class="feed" id="feed"></div>
 </div>
 
 <script src="script.js"></script>
 
-<!-- ============================= -->
-<!-- PROTECCIÓN + USUARIO REAL -->
-<!-- ============================= -->
 <script>
     const token = localStorage.getItem("yuunoToken");
 
     if (!token) {
         window.location.href = "login.html";
     } else {
-        fetch("http://localhost:5000/api/auth/me", {
-            method: "GET",
+        fetch("https://yuuno-backend-mimicajk.onrender.com/api/auth/me", {
             headers: {
-                "Authorization": "Bearer " + token,
+                "Authorization": "Bearer " + token
             }
         })
         .then(res => {
-            if (!res.ok) {
-                throw new Error("Token inválido");
-            }
+            if (!res.ok) throw new Error();
             return res.json();
         })
         .then(data => {
-            const usernameDisplay = document.getElementById("usernameDisplay");
-            const userAvatar = document.getElementById("userAvatar");
-
-            if (usernameDisplay) {
-                usernameDisplay.textContent = data.user.username;
-            }
-
-            if (userAvatar) {
-                userAvatar.textContent = data.user.username.charAt(0).toUpperCase();
-            }
+            document.getElementById("usernameDisplay").textContent = data.user.username;
+            document.getElementById("userAvatar").textContent = data.user.username.charAt(0).toUpperCase();
         })
         .catch(() => {
             localStorage.removeItem("yuunoToken");
-            localStorage.removeItem("yuunoUser");
             window.location.href = "login.html";
         });
     }
-</script>
 
-<!-- ============================= -->
-<!-- LOGOUT -->
-<!-- ============================= -->
-<script>
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", function () {
-            localStorage.removeItem("yuunoToken");
-            localStorage.removeItem("yuunoUser");
-            window.location.href = "login.html";
-        });
-    }
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("yuunoToken");
+        localStorage.removeItem("yuunoUser");
+        window.location.href = "login.html";
+    });
 </script>
 
 </body>

@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
+
     // =============================
     // TYPEWRITER LOOP
     // =============================
@@ -15,22 +17,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!isDeleting) {
                 typingElement.textContent = text.substring(0, index);
                 index++;
-
                 if (index > text.length) {
-                    setTimeout(() => {
-                        isDeleting = true;
-                    }, 5000);
+                    setTimeout(() => isDeleting = true, 5000);
                 }
             } else {
                 typingElement.textContent = text.substring(0, index);
                 index--;
-
                 if (index < 0) {
                     isDeleting = false;
                     index = 0;
                 }
             }
-
             setTimeout(typeLoop, isDeleting ? 35 : 45);
         }
 
@@ -38,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // =============================
-    // REGISTRO REAL (BACKEND)
+    // REGISTRO
     // =============================
 
     const registerForm = document.getElementById("registerForm");
@@ -52,11 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const password = registerForm.querySelector("input[type='password']").value;
 
             try {
-                const response = await fetch("http://localhost:5000/api/auth/register", {
+                const response = await fetch(`${API_URL}/auth/register`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ username, email, password }),
                 });
 
@@ -77,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // =============================
-    // LOGIN REAL (BACKEND + JWT)
+    // LOGIN
     // =============================
 
     const loginForm = document.getElementById("loginForm");
@@ -90,11 +85,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const password = loginForm.querySelector("input[type='password']").value;
 
             try {
-                const response = await fetch("http://localhost:5000/api/auth/login", {
+                const response = await fetch(`${API_URL}/auth/login`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password }),
                 });
 
@@ -105,12 +98,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Guardar token y usuario
                 localStorage.setItem("yuunoToken", data.token);
                 localStorage.setItem("yuunoUser", JSON.stringify(data.user));
 
                 alert("Login exitoso ✅");
-
                 window.location.href = "home.html";
 
             } catch (error) {
@@ -120,3 +111,82 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+// =============================
+// POSTS
+// =============================
+
+const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
+
+async function crearPost() {
+    const token = localStorage.getItem("yuunoToken");
+    const postInput = document.getElementById("postInput");
+    const content = postInput.value.trim();
+
+    if (!content) {
+        alert("Escribe algo antes de publicar");
+        return;
+    }
+
+    try {
+        await fetch(`${API_URL}/posts`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+            body: JSON.stringify({ content }),
+        });
+
+        postInput.value = "";
+        cargarPosts();
+
+    } catch (error) {
+        alert("Error creando post");
+    }
+}
+
+async function cargarPosts() {
+    const token = localStorage.getItem("yuunoToken");
+
+    try {
+        const response = await fetch(`${API_URL}/posts`, {
+            headers: {
+                "Authorization": "Bearer " + token,
+            },
+        });
+
+        const posts = await response.json();
+        const feed = document.getElementById("feed");
+        feed.innerHTML = "";
+
+        posts.forEach(post => {
+            const postElement = document.createElement("div");
+            postElement.classList.add("post");
+
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <div class="post-avatar">
+                        ${post.user.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="post-info">
+                        <h4>${post.user.username}</h4>
+                        <span>${new Date(post.createdAt).toLocaleString()}</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    ${post.content}
+                </div>
+            `;
+
+            feed.appendChild(postElement);
+        });
+
+    } catch (error) {
+        console.log("Error cargando posts");
+    }
+}
+
+if (window.location.pathname.includes("home.html")) {
+    cargarPosts();
+}
