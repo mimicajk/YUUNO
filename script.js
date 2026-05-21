@@ -1,11 +1,10 @@
 const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
 
-let loadedPostIds = new Set();
-
-// =============================
-// TYPEWRITER
-// =============================
 document.addEventListener("DOMContentLoaded", function () {
+
+    // =============================
+    // TYPEWRITER
+    // =============================
 
     const text = "Connect, share and discover your vibe in a new modern social experience.";
     const typingElement = document.querySelector(".typing-text");
@@ -35,7 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
         typeLoop();
     }
 
+    // =============================
     // REGISTRO
+    // =============================
+
     const registerForm = document.getElementById("registerForm");
 
     if (registerForm) {
@@ -69,7 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // =============================
     // LOGIN
+    // =============================
+
     const loginForm = document.getElementById("loginForm");
 
     if (loginForm) {
@@ -109,15 +114,13 @@ document.addEventListener("DOMContentLoaded", function () {
 // =============================
 // CREAR POST
 // =============================
+
 async function crearPost() {
     const token = localStorage.getItem("yuunoToken");
     const postInput = document.getElementById("postInput");
     const content = postInput.value.trim();
 
-    if (!content) {
-        alert("Escribe algo antes de publicar");
-        return;
-    }
+    if (!content) return;
 
     try {
         const response = await fetch(`${API_URL}/posts`, {
@@ -129,13 +132,10 @@ async function crearPost() {
             body: JSON.stringify({ content }),
         });
 
-        let newPost = await response.json();
-        if (!newPost.likes) newPost.likes = [];
+        const newPost = await response.json();
 
         postInput.value = "";
-
-        insertarPostEnDOM(newPost, true);
-        loadedPostIds.add(newPost._id);
+        agregarPostAlDOM(newPost);
 
     } catch {
         alert("Error creando post");
@@ -143,9 +143,10 @@ async function crearPost() {
 }
 
 // =============================
-// INSERTAR POST
+// AGREGAR POST AL DOM
 // =============================
-function insertarPostEnDOM(post, prepend = false) {
+
+function agregarPostAlDOM(post) {
 
     const feed = document.getElementById("feed");
     const currentUser = JSON.parse(localStorage.getItem("yuunoUser"));
@@ -153,7 +154,7 @@ function insertarPostEnDOM(post, prepend = false) {
 
     const postElement = document.createElement("div");
     postElement.classList.add("post");
-    postElement.setAttribute("data-post-id", post._id);
+    postElement.setAttribute("data-id", post._id);
 
     postElement.innerHTML = `
         <div class="post-header">
@@ -165,13 +166,10 @@ function insertarPostEnDOM(post, prepend = false) {
                 <span>${new Date(post.createdAt).toLocaleString()}</span>
             </div>
         </div>
-        <div class="post-content">
-            ${post.content}
-        </div>
+        <div class="post-content">${post.content}</div>
         <div class="post-actions">
-            <div class="post-action like-btn ${liked ? 'liked' : ''}" 
-                 data-id="${post._id}">
-                ${liked ? "❤️" : "🤍"} 
+            <div class="post-action like-btn ${liked ? "liked" : ""}">
+                ${liked ? "❤️" : "🤍"}
                 <span class="like-count">${post.likes?.length || 0}</span>
             </div>
         </div>
@@ -180,16 +178,13 @@ function insertarPostEnDOM(post, prepend = false) {
     const likeBtn = postElement.querySelector(".like-btn");
     likeBtn.addEventListener("click", () => toggleLike(post._id));
 
-    if (prepend) {
-        feed.prepend(postElement);
-    } else {
-        feed.appendChild(postElement);
-    }
+    feed.prepend(postElement);
 }
 
 // =============================
 // CARGAR POSTS
 // =============================
+
 async function cargarPosts() {
     const token = localStorage.getItem("yuunoToken");
 
@@ -201,13 +196,10 @@ async function cargarPosts() {
         });
 
         const posts = await response.json();
+        const feed = document.getElementById("feed");
+        feed.innerHTML = "";
 
-        posts.forEach(post => {
-            if (!loadedPostIds.has(post._id)) {
-                insertarPostEnDOM(post, true);
-                loadedPostIds.add(post._id);
-            }
-        });
+        posts.forEach(post => agregarPostAlDOM(post));
 
     } catch {
         console.log("Error cargando posts");
@@ -215,17 +207,20 @@ async function cargarPosts() {
 }
 
 // =============================
-// LIKE INSTANTÁNEO FIXED
+// LIKE INSTANTÁNEO REAL
 // =============================
+
 async function toggleLike(postId) {
     const token = localStorage.getItem("yuunoToken");
-    const likeBtn = document.querySelector(`.like-btn[data-id="${postId}"]`);
+
+    const postElement = document.querySelector(`[data-id="${postId}"]`);
+    const likeBtn = postElement.querySelector(".like-btn");
     const likeCount = likeBtn.querySelector(".like-count");
 
     const isLiked = likeBtn.classList.contains("liked");
     let currentCount = parseInt(likeCount.textContent);
 
-    // UI inmediata
+    // UI instantánea
     if (isLiked) {
         likeBtn.classList.remove("liked");
         likeBtn.innerHTML = `🤍 <span class="like-count">${currentCount - 1}</span>`;
@@ -235,29 +230,21 @@ async function toggleLike(postId) {
     }
 
     try {
-        const response = await fetch(`${API_URL}/posts/${postId}/like`, {
+        await fetch(`${API_URL}/posts/${postId}/like`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + token,
             },
         });
-
-        if (!response.ok) throw new Error();
-
     } catch {
-        // revertir si falla
-        if (isLiked) {
-            likeBtn.classList.add("liked");
-            likeBtn.innerHTML = `❤️ <span class="like-count">${currentCount}</span>`;
-        } else {
-            likeBtn.classList.remove("liked");
-            likeBtn.innerHTML = `🤍 <span class="like-count">${currentCount}</span>`;
-        }
+        console.log("Error al hacer like");
     }
 }
 
 // =============================
+// INICIO HOME
+// =============================
+
 if (window.location.pathname.includes("home.html")) {
     cargarPosts();
-    setInterval(() => cargarPosts(), 5000);
 }
