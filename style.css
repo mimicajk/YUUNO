@@ -400,3 +400,32 @@ body{
     cursor:pointer;
     font-weight:600;
 }
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body {
+    background-size: 200% 200%;
+    animation: bgMove 20s ease infinite;
+}
+.post,
+.card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.post:hover,
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+@keyframes logoPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.logo {
+    animation: logoPulse 6s ease-in-out infinite;
+}
