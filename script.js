@@ -1,21 +1,25 @@
 const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
 
-document.addEventListener("DOMContentLoaded", () => {
+let loadedPostIds = new Set();
 
+document.addEventListener("DOMContentLoaded", () => {
     if (window.location.pathname.includes("home.html")) {
         cargarPosts();
+
+        // ✅ Auto actualizar cada 5 segundos
+        setInterval(() => {
+            actualizarFeed();
+        }, 5000);
     }
-
 });
-
 
 // =============================
 // CREAR POST
 // =============================
 async function crearPost() {
     const token = localStorage.getItem("yuunoToken");
-    const contentInput = document.getElementById("postInput");
-    const content = contentInput.value.trim();
+    const input = document.getElementById("postInput");
+    const content = input.value.trim();
 
     if (!content) return;
 
@@ -31,55 +35,59 @@ async function crearPost() {
 
         const newPost = await response.json();
 
-        // ✅ volver a traerlo populado desde el servidor
-        const fullPostResponse = await fetch(`${API_URL}/posts`, {
-            headers: {
-                "Authorization": "Bearer " + token,
-            },
-        });
-
-        const posts = await fullPostResponse.json();
-        const postCompleto = posts.find(p => p._id === newPost._id);
-
-        agregarPost(postCompleto);
-
-        contentInput.value = "";
+        input.value = "";
+        insertarPost(newPost);
+        loadedPostIds.add(newPost._id);
 
     } catch {
         alert("Error creando post");
     }
 }
 
-
 // =============================
-// CARGAR POSTS
+// CARGAR POSTS INICIALES
 // =============================
 async function cargarPosts() {
     const token = localStorage.getItem("yuunoToken");
 
-    try {
-        const response = await fetch(`${API_URL}/posts`, {
-            headers: {
-                "Authorization": "Bearer " + token,
-            },
-        });
+    const response = await fetch(`${API_URL}/posts`, {
+        headers: { "Authorization": "Bearer " + token },
+    });
 
-        const posts = await response.json();
-        const feed = document.getElementById("feed");
-        feed.innerHTML = "";
+    const posts = await response.json();
+    const feed = document.getElementById("feed");
+    feed.innerHTML = "";
 
-        posts.forEach(post => agregarPost(post));
-
-    } catch {
-        console.log("Error cargando posts");
-    }
+    posts.forEach(post => {
+        insertarPost(post);
+        loadedPostIds.add(post._id);
+    });
 }
 
+// =============================
+// ACTUALIZAR FEED SIN REFRESH
+// =============================
+async function actualizarFeed() {
+    const token = localStorage.getItem("yuunoToken");
+
+    const response = await fetch(`${API_URL}/posts`, {
+        headers: { "Authorization": "Bearer " + token },
+    });
+
+    const posts = await response.json();
+
+    posts.forEach(post => {
+        if (!loadedPostIds.has(post._id)) {
+            insertarPost(post);
+            loadedPostIds.add(post._id);
+        }
+    });
+}
 
 // =============================
-// AGREGAR POST AL DOM
+// INSERTAR POST
 // =============================
-function agregarPost(post) {
+function insertarPost(post) {
 
     const feed = document.getElementById("feed");
     const currentUser = JSON.parse(localStorage.getItem("yuunoUser"));
@@ -114,7 +122,6 @@ function agregarPost(post) {
     feed.prepend(postElement);
 }
 
-
 // =============================
 // LIKE INSTANTÁNEO
 // =============================
@@ -129,7 +136,6 @@ async function toggleLike(postId) {
     const isLiked = likeBtn.classList.contains("liked");
     let count = parseInt(likeCount.textContent);
 
-    // ✅ UI inmediata
     if (isLiked) {
         likeBtn.classList.remove("liked");
         emoji.textContent = "🤍";
@@ -143,11 +149,7 @@ async function toggleLike(postId) {
     try {
         await fetch(`${API_URL}/posts/${postId}/like`, {
             method: "PUT",
-            headers: {
-                "Authorization": "Bearer " + token,
-            },
+            headers: { "Authorization": "Bearer " + token },
         });
-    } catch {
-        console.log("Error al hacer like");
-    }
+    } catch {}
 }
