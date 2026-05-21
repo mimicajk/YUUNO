@@ -6,8 +6,12 @@
 }
 
 body{
-    background:#0B0F19;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(176,38,255,0.25), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(0,191,255,0.25), transparent 40%),
+        linear-gradient(135deg, #0B0F19 0%, #0A0E1A 50%, #070B14 100%);
     color:#ffffff;
+    min-height:100vh;
 }
 
 /* ========================= */
@@ -26,7 +30,9 @@ body{
 .sidebar{
     width:260px;
     padding:30px;
-    background:#0F172A;
+    background:rgba(15,23,42,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -36,10 +42,10 @@ body{
 .logo{
     font-size:32px;
     font-weight:900;
-    background:linear-gradient(90deg,#B026FF,#00BFFF);
+    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
     -webkit-background-clip:text;
     color:transparent;
-    letter-spacing:2px;
+    text-shadow:0 0 25px rgba(176,38,255,0.4);
 }
 
 .menu{
@@ -69,7 +75,6 @@ body{
     color:white;
     font-weight:600;
     cursor:pointer;
-    margin-top:40px;
 }
 
 /* ========================= */
@@ -95,16 +100,14 @@ body{
     height:65px;
     border-radius:50%;
     background:linear-gradient(135deg,#B026FF,#00BFFF);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
 }
 
 /* CREATE POST */
 
 .create-post{
-    background:#111827;
+    background:rgba(17,24,39,0.75);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
     padding:22px;
     border-radius:22px;
     display:flex;
@@ -118,8 +121,8 @@ body{
     background:transparent;
     border:none;
     color:white;
-    font-size:15px;
     outline:none;
+    font-size:15px;
 }
 
 .create-post button{
@@ -137,7 +140,9 @@ body{
 /* ========================= */
 
 .post{
-    background:#111827;
+    background:rgba(17,24,39,0.75);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
     padding:25px;
     border-radius:22px;
     margin-bottom:25px;
@@ -203,12 +208,16 @@ body{
 .right-panel{
     width:300px;
     padding:40px;
-    background:#0F172A;
+    background:rgba(15,23,42,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
     border-left:1px solid rgba(255,255,255,0.05);
 }
 
 .card{
-    background:#111827;
+    background:rgba(17,24,39,0.75);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
     padding:20px;
     border-radius:22px;
     margin-bottom:20px;
@@ -226,10 +235,7 @@ body{
     margin-bottom:8px;
 }
 
-/* ========================= */
 /* SCROLL */
-/* ========================= */
-
 .feed-container::-webkit-scrollbar{
     width:6px;
 }
@@ -237,47 +243,4 @@ body{
 .feed-container::-webkit-scrollbar-thumb{
     background:#B026FF;
     border-radius:10px;
-}
-/* ========================= */
-/* BACKGROUND GLOW */
-/* ========================= */
-
-body::before{
-    content:"";
-    position:fixed;
-    top:-200px;
-    left:-200px;
-    width:600px;
-    height:600px;
-    background:radial-gradient(circle,#B026FF 0%, transparent 70%);
-    opacity:0.15;
-    filter:blur(120px);
-    animation:floatGlow 12s ease-in-out infinite;
-    z-index:-1;
-}
-
-body::after{
-    content:"";
-    position:fixed;
-    bottom:-200px;
-    right:-200px;
-    width:600px;
-    height:600px;
-    background:radial-gradient(circle,#00BFFF 0%, transparent 70%);
-    opacity:0.15;
-    filter:blur(120px);
-    animation:floatGlow 15s ease-in-out infinite reverse;
-    z-index:-1;
-}
-
-@keyframes floatGlow{
-    0%{
-        transform:translate(0,0);
-    }
-    50%{
-        transform:translate(50px,-30px);
-    }
-    100%{
-        transform:translate(0,0);
-    }
 }
