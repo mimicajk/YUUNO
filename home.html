@@ -1,68 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>YUUNO - Home</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YUUNO</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body class="home-page">
+<body>
 
-<nav class="navbar">
-    <div class="navbar-logo">YUUNO</div>
-    <div class="navbar-links">
-        <a href="#" class="active">🏠 Inicio</a>
-        <a href="#">💬 Chat</a>
-        <a href="#">👤 Perfil</a>
-    </div>
-    <div class="user-info">
-        <span id="usernameDisplay"></span>
-        <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
-    </div>
-</nav>
+<div class="layout">
 
-<div class="home-content">
-    <div class="create-post">
-        <div class="post-avatar" id="userAvatar">U</div>
-        <input type="text" id="postInput" placeholder="¿Qué estás pensando?">
-        <button onclick="crearPost()" class="btn-post">Publicar</button>
-    </div>
-    <div class="feed" id="feed"></div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">YUUNO</div>
+
+        <nav>
+            <a class="active">🏠 Inicio</a>
+            <a>🔍 Explorar</a>
+            <a>💬 Mensajes</a>
+            <a>🔔 Notificaciones</a>
+            <a>👤 Perfil</a>
+        </nav>
+
+        <button class="create-btn">+ Crear publicación</button>
+    </aside>
+
+    <!-- MAIN FEED -->
+    <main class="feed-container">
+
+        <!-- STORIES -->
+        <div class="stories">
+            <div class="story add">+</div>
+            <div class="story"></div>
+            <div class="story"></div>
+            <div class="story"></div>
+            <div class="story"></div>
+        </div>
+
+        <!-- CREATE POST -->
+        <div class="create-post">
+            <input id="postInput" placeholder="¿Qué estás pensando?" />
+            <button onclick="crearPost()">Publicar</button>
+        </div>
+
+        <!-- FEED -->
+        <div id="feed" class="feed"></div>
+
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+        <div class="card">
+            <h3>Tendencias</h3>
+            <p>#YUUNO</p>
+            <p>#FindYourVibe</p>
+            <p>#GamingLife</p>
+        </div>
+
+        <div class="card">
+            <h3>Sugerencias</h3>
+            <p>Sofia</p>
+            <p>Maxz</p>
+            <p>Luisito</p>
+        </div>
+    </aside>
+
 </div>
 
 <script src="script.js"></script>
 
 <script>
-    const token = localStorage.getItem("yuunoToken");
-
-    if (!token) {
-        window.location.href = "login.html";
-    } else {
-        fetch("https://yuuno-backend-mimicajk.onrender.com/api/auth/me", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error();
-            return res.json();
-        })
-        .then(data => {
-            document.getElementById("usernameDisplay").textContent = data.user.username;
-            document.getElementById("userAvatar").textContent = data.user.username.charAt(0).toUpperCase();
-            localStorage.setItem("yuunoUser", JSON.stringify(data.user));
-        })
-        .catch(() => {
-            localStorage.removeItem("yuunoToken");
-            window.location.href = "login.html";
-        });
-    }
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.removeItem("yuunoToken");
-        localStorage.removeItem("yuunoUser");
-        window.location.href = "login.html";
-    });
+const token = localStorage.getItem("yuunoToken");
+if (!token) window.location.href = "login.html";
 </script>
 
 </body>
