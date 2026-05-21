@@ -35,10 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         typeLoop();
     }
 
-    // =============================
     // REGISTRO
-    // =============================
-
     const registerForm = document.getElementById("registerForm");
 
     if (registerForm) {
@@ -66,16 +63,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Cuenta creada correctamente ✅");
                 window.location.href = "login.html";
 
-            } catch (error) {
+            } catch {
                 alert("Error conectando con el servidor");
             }
         });
     }
 
-    // =============================
     // LOGIN
-    // =============================
-
     const loginForm = document.getElementById("loginForm");
 
     if (loginForm) {
@@ -102,10 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem("yuunoToken", data.token);
                 localStorage.setItem("yuunoUser", JSON.stringify(data.user));
 
-                alert("Login exitoso ✅");
                 window.location.href = "home.html";
 
-            } catch (error) {
+            } catch {
                 alert("Error conectando con el servidor");
             }
         });
@@ -116,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // =============================
 // CREAR POST
 // =============================
-
 async function crearPost() {
     const token = localStorage.getItem("yuunoToken");
     const postInput = document.getElementById("postInput");
@@ -138,30 +130,26 @@ async function crearPost() {
         });
 
         let newPost = await response.json();
-
-        if (!newPost.likes) {
-            newPost.likes = [];
-        }
+        if (!newPost.likes) newPost.likes = [];
 
         postInput.value = "";
 
         insertarPostEnDOM(newPost, true);
         loadedPostIds.add(newPost._id);
 
-    } catch (error) {
+    } catch {
         alert("Error creando post");
     }
 }
 
 // =============================
-// INSERTAR POST EN DOM
+// INSERTAR POST
 // =============================
-
 function insertarPostEnDOM(post, prepend = false) {
 
     const feed = document.getElementById("feed");
     const currentUser = JSON.parse(localStorage.getItem("yuunoUser"));
-    const liked = post.likes?.some(id => id === currentUser?.id);
+    const liked = post.likes?.includes(currentUser?.id);
 
     const postElement = document.createElement("div");
     postElement.classList.add("post");
@@ -181,8 +169,9 @@ function insertarPostEnDOM(post, prepend = false) {
             ${post.content}
         </div>
         <div class="post-actions">
-            <div class="post-action like-btn ${liked ? 'liked' : ''}" data-id="${post._id}">
-                ${liked ? '❤️' : '🤍'} 
+            <div class="post-action like-btn ${liked ? 'liked' : ''}" 
+                 data-id="${post._id}">
+                ${liked ? "❤️" : "🤍"} 
                 <span class="like-count">${post.likes?.length || 0}</span>
             </div>
         </div>
@@ -201,7 +190,6 @@ function insertarPostEnDOM(post, prepend = false) {
 // =============================
 // CARGAR POSTS
 // =============================
-
 async function cargarPosts() {
     const token = localStorage.getItem("yuunoToken");
 
@@ -221,33 +209,29 @@ async function cargarPosts() {
             }
         });
 
-    } catch (error) {
+    } catch {
         console.log("Error cargando posts");
     }
 }
 
 // =============================
-// LIKE INSTANTÁNEO
+// LIKE INSTANTÁNEO FIXED
 // =============================
-
 async function toggleLike(postId) {
     const token = localStorage.getItem("yuunoToken");
-
     const likeBtn = document.querySelector(`.like-btn[data-id="${postId}"]`);
     const likeCount = likeBtn.querySelector(".like-count");
 
     const isLiked = likeBtn.classList.contains("liked");
     let currentCount = parseInt(likeCount.textContent);
 
-    // UI instantánea
+    // UI inmediata
     if (isLiked) {
         likeBtn.classList.remove("liked");
-        likeBtn.firstChild.textContent = "🤍 ";
-        likeCount.textContent = currentCount - 1;
+        likeBtn.innerHTML = `🤍 <span class="like-count">${currentCount - 1}</span>`;
     } else {
         likeBtn.classList.add("liked");
-        likeBtn.firstChild.textContent = "❤️ ";
-        likeCount.textContent = currentCount + 1;
+        likeBtn.innerHTML = `❤️ <span class="like-count">${currentCount + 1}</span>`;
     }
 
     try {
@@ -260,28 +244,20 @@ async function toggleLike(postId) {
 
         if (!response.ok) throw new Error();
 
-    } catch (error) {
+    } catch {
         // revertir si falla
         if (isLiked) {
             likeBtn.classList.add("liked");
-            likeBtn.firstChild.textContent = "❤️ ";
-            likeCount.textContent = currentCount;
+            likeBtn.innerHTML = `❤️ <span class="like-count">${currentCount}</span>`;
         } else {
             likeBtn.classList.remove("liked");
-            likeBtn.firstChild.textContent = "🤍 ";
-            likeCount.textContent = currentCount;
+            likeBtn.innerHTML = `🤍 <span class="like-count">${currentCount}</span>`;
         }
     }
 }
 
 // =============================
-// AUTO ACTUALIZAR FEED
-// =============================
-
 if (window.location.pathname.includes("home.html")) {
     cargarPosts();
-
-    setInterval(() => {
-        cargarPosts();
-    }, 5000);
+    setInterval(() => cargarPosts(), 5000);
 }
