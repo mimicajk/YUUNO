@@ -1,6 +1,6 @@
-document.addEventListener("DOMContentLoaded", function () {
+const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
 
-    const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
+document.addEventListener("DOMContentLoaded", function () {
 
     // =============================
     // TYPEWRITER LOOP
@@ -113,10 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // =============================
-// POSTS
+// CREAR POST
 // =============================
-
-const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
 
 async function crearPost() {
     const token = localStorage.getItem("yuunoToken");
@@ -146,6 +144,12 @@ async function crearPost() {
     }
 }
 
+// =============================
+// CARGAR POSTS
+// =============================
+
+let currentUserId = null;
+
 async function cargarPosts() {
     const token = localStorage.getItem("yuunoToken");
 
@@ -160,10 +164,19 @@ async function cargarPosts() {
         const feed = document.getElementById("feed");
         feed.innerHTML = "";
 
+        // Obtener usuario actual
+        if (!currentUserId) {
+            const user = JSON.parse(localStorage.getItem("yuunoUser"));
+            if (user) currentUserId = user.id;
+        }
+
         posts.forEach(post => {
+            const liked = post.likes.some(
+                id => id.toString() === currentUserId
+            );
+
             const postElement = document.createElement("div");
             postElement.classList.add("post");
-
             postElement.innerHTML = `
                 <div class="post-header">
                     <div class="post-avatar">
@@ -177,6 +190,14 @@ async function cargarPosts() {
                 <div class="post-content">
                     ${post.content}
                 </div>
+                <div class="post-actions">
+                    <div class="post-action like-btn ${liked ? 'liked' : ''}" onclick="toggleLike('${post._id}')">
+                        ${liked ? '❤️' : '🤍'} <span class="like-count">${post.likes.length}</span>
+                    </div>
+                    <div class="post-action">
+                        💬 Comentar
+                    </div>
+                </div>
             `;
 
             feed.appendChild(postElement);
@@ -186,6 +207,36 @@ async function cargarPosts() {
         console.log("Error cargando posts");
     }
 }
+
+// =============================
+// TOGGLE LIKE
+// =============================
+
+async function toggleLike(postId) {
+    const token = localStorage.getItem("yuunoToken");
+
+    try {
+        const response = await fetch(`${API_URL}/posts/${postId}/like`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token,
+            },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            cargarPosts();
+        }
+
+    } catch (error) {
+        console.log("Error al procesar like");
+    }
+}
+
+// =============================
+// CARGAR POSTS AL ENTRAR A HOME
+// =============================
 
 if (window.location.pathname.includes("home.html")) {
     cargarPosts();

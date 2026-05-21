@@ -50,6 +50,7 @@
         .then(data => {
             document.getElementById("usernameDisplay").textContent = data.user.username;
             document.getElementById("userAvatar").textContent = data.user.username.charAt(0).toUpperCase();
+            localStorage.setItem("yuunoUser", JSON.stringify(data.user));
         })
         .catch(() => {
             localStorage.removeItem("yuunoToken");
