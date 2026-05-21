@@ -17,13 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =============================
-    // CARGAR POSTS SOLO EN HOME
+    // CARGAR POSTS
     // =============================
     if (window.location.pathname.includes("home.html")) {
 
         cargarPosts();
 
-        // auto actualizar feed
         setInterval(() => {
             actualizarFeed();
         }, 5000);
@@ -42,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
 
             const email = document.querySelector('input[type="email"]').value;
+
             const password = document.querySelector('input[type="password"]').value;
 
             if(email && password){
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =============================
-    // CERRAR SESIÓN
+    // LOGOUT
     // =============================
     const logoutBtn = document.getElementById("logoutBtn");
 
@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         logoutBtn.addEventListener("click", () => {
 
             localStorage.removeItem("yuunoUser");
+
             localStorage.removeItem("yuunoToken");
 
             window.location.href = "login.html";
@@ -88,7 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
 async function crearPost() {
 
     const token = localStorage.getItem("yuunoToken");
+
     const input = document.getElementById("postInput");
+
     const content = input.value.trim();
 
     if (!content) return;
@@ -121,7 +124,7 @@ async function crearPost() {
 }
 
 // =============================
-// CARGAR POSTS INICIALES
+// CARGAR POSTS
 // =============================
 async function cargarPosts() {
 
@@ -189,8 +192,11 @@ function insertarPost(post) {
 
     if(!feed) return;
 
-    const currentUser = JSON.parse(localStorage.getItem("yuunoUser"));
-    const liked = post.likes?.includes(currentUser?.id);
+    // usuario actual
+    const currentUser = localStorage.getItem("yuunoUser");
+
+    // likes temporales
+    const liked = false;
 
     const postElement = document.createElement("div");
 
@@ -200,6 +206,7 @@ function insertarPost(post) {
 
     postElement.innerHTML = `
         <div class="post-header">
+
             <div class="post-avatar">
                 ${post.user.username.charAt(0).toUpperCase()}
             </div>
@@ -208,6 +215,7 @@ function insertarPost(post) {
                 <h4>${post.user.username}</h4>
                 <span>${new Date(post.createdAt).toLocaleString()}</span>
             </div>
+
         </div>
 
         <div class="post-content">
