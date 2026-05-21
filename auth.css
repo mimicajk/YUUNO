@@ -40,9 +40,9 @@
 }
 
 .login-logo{
-    font-size:64px;
-    font-weight:600;
-    letter-spacing:4px;
+    font-size:88px;   /* ✅ más grande */
+    font-weight:700;  /* ✅ un poco más fuerte */
+    letter-spacing:6px;
     background:linear-gradient(90deg,#9333EA,#3B82F6);
     -webkit-background-clip:text;
     color:transparent;
