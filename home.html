@@ -73,11 +73,16 @@
 <script src="script.js"></script>
 
 <script>
-const token = localStorage.getItem("yuunoToken");
-if (!token) window.location.href = "login.html";
+const usuario = localStorage.getItem("yuunoUser");
+
+if (!usuario) {
+    window.location.href = "login.html";
+}
 </script>
+
 <button id="logoutBtn">
     Cerrar sesión
 </button>
+
 </body>
 </html>
