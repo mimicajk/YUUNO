@@ -238,3 +238,46 @@ body{
     background:#B026FF;
     border-radius:10px;
 }
+/* ========================= */
+/* BACKGROUND GLOW */
+/* ========================= */
+
+body::before{
+    content:"";
+    position:fixed;
+    top:-200px;
+    left:-200px;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle,#B026FF 0%, transparent 70%);
+    opacity:0.15;
+    filter:blur(120px);
+    animation:floatGlow 12s ease-in-out infinite;
+    z-index:-1;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    bottom:-200px;
+    right:-200px;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle,#00BFFF 0%, transparent 70%);
+    opacity:0.15;
+    filter:blur(120px);
+    animation:floatGlow 15s ease-in-out infinite reverse;
+    z-index:-1;
+}
+
+@keyframes floatGlow{
+    0%{
+        transform:translate(0,0);
+    }
+    50%{
+        transform:translate(50px,-30px);
+    }
+    100%{
+        transform:translate(0,0);
+    }
+}
