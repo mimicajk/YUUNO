@@ -20,9 +20,19 @@
   </div>
 
   <script>
+
     setTimeout(() => {
-      window.location.href = "login.html";
+
+      const usuario = localStorage.getItem("yuunoUser");
+
+      if(usuario){
+        window.location.href = "home.html";
+      }else{
+        window.location.href = "login.html";
+      }
+
     }, 3000);
+
   </script>
 
 </body>

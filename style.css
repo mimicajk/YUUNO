@@ -429,3 +429,38 @@ body {
 .logo {
     animation: logoPulse 6s ease-in-out infinite;
 }
+#logoutBtn{
+
+    position: fixed;
+
+    bottom: 20px;
+
+    right: 20px;
+
+    padding: 14px 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background: linear-gradient(90deg,#9333ea,#06b6d4);
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 0 20px rgba(147,51,234,0.4);
+
+    z-index: 999;
+
+    transition: 0.3s;
+
+}
+
+#logoutBtn:hover{
+
+    transform: scale(1.05);
+
+}
