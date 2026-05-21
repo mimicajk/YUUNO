@@ -3,48 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YUUNO</title>
-<link rel="stylesheet" href="auth.css">
+<title>Login - YUUNO</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body class="social-login">
+<body>
 
-<div class="login-wrapper">
+<div class="auth-layout">
 
-    <!-- PREVIEW SOCIAL -->
-    <div class="social-preview">
+    <div class="auth-left">
+        <div class="auth-glow"></div>
 
-        <div class="preview-stories">
-            <div class="story"></div>
-            <div class="story"></div>
-            <div class="story"></div>
-            <div class="story"></div>
-        </div>
-
-        <div class="preview-post">
-            <h4>Valentina</h4>
-            <p>Atardecer en la ciudad 🌆</p>
-            <div class="preview-image"></div>
-            <div class="preview-actions">
-                ❤️ 1.2K &nbsp;&nbsp; 💬 87 &nbsp;&nbsp; 🔁 236
-            </div>
-        </div>
-
+        <h1 class="auth-brand">YUUNO</h1>
+        <p class="auth-tagline">
+            Connect, share and discover your vibe in a new modern social experience.
+        </p>
     </div>
 
-    <!-- LOGIN CARD -->
-    <div class="login-panel">
+    <div class="auth-right">
+        <div class="auth-form-card">
+            <h2>Bienvenido de nuevo</h2>
 
-        <h1 class="brand">YUUNO</h1>
+            <form id="loginForm">
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit">Iniciar sesión</button>
+            </form>
 
-        <form id="loginForm">
-            <input type="email" placeholder="Correo electrónico" required>
-            <input type="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar sesión</button>
-        </form>
-
-        <p>¿No tienes cuenta? <a href="register.html">Crear cuenta</a></p>
-
+            <p>¿No tienes cuenta?
+                <a href="register.html">Crear cuenta</a>
+            </p>
+        </div>
     </div>
 
 </div>
