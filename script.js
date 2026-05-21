@@ -164,7 +164,6 @@ async function cargarPosts() {
         const feed = document.getElementById("feed");
         feed.innerHTML = "";
 
-        // Obtener usuario actual
         if (!currentUserId) {
             const user = JSON.parse(localStorage.getItem("yuunoUser"));
             if (user) currentUserId = user.id;
@@ -177,6 +176,7 @@ async function cargarPosts() {
 
             const postElement = document.createElement("div");
             postElement.classList.add("post");
+
             postElement.innerHTML = `
                 <div class="post-header">
                     <div class="post-avatar">
@@ -191,11 +191,11 @@ async function cargarPosts() {
                     ${post.content}
                 </div>
                 <div class="post-actions">
-                    <div class="post-action like-btn ${liked ? 'liked' : ''}" onclick="toggleLike('${post._id}')">
-                        ${liked ? '❤️' : '🤍'} <span class="like-count">${post.likes.length}</span>
-                    </div>
-                    <div class="post-action">
-                        💬 Comentar
+                    <div class="post-action like-btn ${liked ? 'liked' : ''}" 
+                         data-id="${post._id}" 
+                         onclick="toggleLike('${post._id}')">
+                        ${liked ? '❤️' : '🤍'} 
+                        <span class="like-count">${post.likes.length}</span>
                     </div>
                 </div>
             `;
@@ -209,7 +209,7 @@ async function cargarPosts() {
 }
 
 // =============================
-// TOGGLE LIKE
+// TOGGLE LIKE (SIN REFRESH)
 // =============================
 
 async function toggleLike(postId) {
@@ -224,9 +224,17 @@ async function toggleLike(postId) {
         });
 
         const data = await response.json();
+        if (!response.ok) return;
 
-        if (response.ok) {
-            cargarPosts();
+        const likeBtn = document.querySelector(`.like-btn[data-id="${postId}"]`);
+        const likeCount = likeBtn.querySelector(".like-count");
+
+        if (likeBtn.classList.contains("liked")) {
+            likeBtn.classList.remove("liked");
+            likeBtn.innerHTML = `🤍 <span class="like-count">${data.totalLikes}</span>`;
+        } else {
+            likeBtn.classList.add("liked");
+            likeBtn.innerHTML = `❤️ <span class="like-count">${data.totalLikes}</span>`;
         }
 
     } catch (error) {
@@ -235,7 +243,7 @@ async function toggleLike(postId) {
 }
 
 // =============================
-// CARGAR POSTS AL ENTRAR A HOME
+// CARGAR POSTS EN HOME
 // =============================
 
 if (window.location.pathname.includes("home.html")) {
