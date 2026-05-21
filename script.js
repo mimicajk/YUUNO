@@ -2,11 +2,10 @@ const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
 
 let loadedPostIds = new Set();
 
+// =============================
+// TYPEWRITER
+// =============================
 document.addEventListener("DOMContentLoaded", function () {
-
-    // =============================
-    // TYPEWRITER LOOP
-    // =============================
 
     const text = "Connect, share and discover your vibe in a new modern social experience.";
     const typingElement = document.querySelector(".typing-text");
@@ -138,7 +137,12 @@ async function crearPost() {
             body: JSON.stringify({ content }),
         });
 
-        const newPost = await response.json();
+        let newPost = await response.json();
+
+        if (!newPost.likes) {
+            newPost.likes = [];
+        }
+
         postInput.value = "";
 
         insertarPostEnDOM(newPost, true);
@@ -157,10 +161,11 @@ function insertarPostEnDOM(post, prepend = false) {
 
     const feed = document.getElementById("feed");
     const currentUser = JSON.parse(localStorage.getItem("yuunoUser"));
-    const liked = post.likes?.includes(currentUser?.id);
+    const liked = post.likes?.some(id => id === currentUser?.id);
 
     const postElement = document.createElement("div");
     postElement.classList.add("post");
+    postElement.setAttribute("data-post-id", post._id);
 
     postElement.innerHTML = `
         <div class="post-header">
@@ -176,14 +181,15 @@ function insertarPostEnDOM(post, prepend = false) {
             ${post.content}
         </div>
         <div class="post-actions">
-            <div class="post-action like-btn ${liked ? 'liked' : ''}" 
-                 data-id="${post._id}" 
-                 onclick="toggleLike('${post._id}')">
+            <div class="post-action like-btn ${liked ? 'liked' : ''}" data-id="${post._id}">
                 ${liked ? '❤️' : '🤍'} 
                 <span class="like-count">${post.likes?.length || 0}</span>
             </div>
         </div>
     `;
+
+    const likeBtn = postElement.querySelector(".like-btn");
+    likeBtn.addEventListener("click", () => toggleLike(post._id));
 
     if (prepend) {
         feed.prepend(postElement);
@@ -193,7 +199,7 @@ function insertarPostEnDOM(post, prepend = false) {
 }
 
 // =============================
-// CARGAR POSTS SIN BORRAR TODO
+// CARGAR POSTS
 // =============================
 
 async function cargarPosts() {
@@ -233,7 +239,7 @@ async function toggleLike(postId) {
     const isLiked = likeBtn.classList.contains("liked");
     let currentCount = parseInt(likeCount.textContent);
 
-    // UI inmediata
+    // UI instantánea
     if (isLiked) {
         likeBtn.classList.remove("liked");
         likeBtn.firstChild.textContent = "🤍 ";
