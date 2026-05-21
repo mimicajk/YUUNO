@@ -2,14 +2,15 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 body{
-    background:#0b0f19;
-    color:white;
+    background:#0c101a;
+    color:#fff;
 }
 
+/* LAYOUT */
 .layout{
     display:flex;
     height:100vh;
@@ -19,7 +20,7 @@ body{
 .sidebar{
     width:250px;
     padding:30px;
-    background:#0e1323;
+    background:#0f1526;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -27,73 +28,77 @@ body{
 }
 
 .logo{
-    font-size:28px;
-    font-weight:bold;
-    background:linear-gradient(90deg,#b026ff,#00bfff);
+    font-size:30px;
+    font-weight:800;
+    background:linear-gradient(90deg,#a855f7,#3b82f6);
     -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+    color:transparent;
 }
 
-.sidebar nav{
+.menu{
     display:flex;
     flex-direction:column;
-    gap:20px;
+    gap:18px;
 }
 
-.sidebar nav a{
-    color:#aaa;
+.menu a{
+    color:#a1a1aa;
     cursor:pointer;
     transition:0.3s;
+    font-size:15px;
 }
 
-.sidebar nav a:hover,
-.sidebar nav a.active{
-    color:#00bfff;
+.menu a:hover,
+.menu a.active{
+    color:#fff;
 }
 
 .create-btn{
     padding:12px;
     border:none;
-    border-radius:10px;
-    background:linear-gradient(90deg,#b026ff,#00bfff);
+    border-radius:12px;
+    background:linear-gradient(90deg,#a855f7,#3b82f6);
     color:white;
     cursor:pointer;
+    font-weight:600;
 }
 
 /* FEED */
 .feed-container{
     flex:1;
-    padding:30px;
+    padding:40px;
     overflow-y:auto;
 }
 
+/* STORIES */
 .stories{
     display:flex;
     gap:15px;
-    margin-bottom:25px;
+    margin-bottom:30px;
 }
 
 .story{
-    width:60px;
-    height:60px;
+    width:65px;
+    height:65px;
     border-radius:50%;
-    background:linear-gradient(135deg,#b026ff,#00bfff);
-}
-
-.story.add{
+    background:linear-gradient(135deg,#a855f7,#3b82f6);
     display:flex;
     align-items:center;
     justify-content:center;
+}
+
+.story.add{
     font-size:28px;
 }
 
+/* CREATE POST */
 .create-post{
-    background:#141a2f;
+    background:#141b2d;
     padding:20px;
-    border-radius:15px;
+    border-radius:18px;
     display:flex;
-    gap:10px;
-    margin-bottom:25px;
+    gap:15px;
+    margin-bottom:30px;
 }
 
 .create-post input{
@@ -101,31 +106,33 @@ body{
     background:transparent;
     border:none;
     color:white;
+    font-size:15px;
     outline:none;
 }
 
 .create-post button{
-    padding:8px 15px;
+    padding:8px 18px;
     border:none;
     border-radius:10px;
-    background:#00bfff;
+    background:#3b82f6;
     color:white;
     cursor:pointer;
 }
 
-/* POSTS */
+/* POST */
 .post{
-    background:#141a2f;
+    background:#141b2d;
     padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    animation:fadeIn 0.4s ease;
+    border-radius:18px;
+    margin-bottom:25px;
+    animation:fadeIn 0.3s ease;
 }
 
 .post-actions{
     margin-top:15px;
     display:flex;
-    gap:20px;
+    gap:25px;
+    color:#a1a1aa;
 }
 
 .like-btn{
@@ -137,19 +144,34 @@ body{
     transform:scale(1.1);
 }
 
+.like-btn.liked{
+    color:#ef4444;
+}
+
 /* RIGHT PANEL */
 .right-panel{
     width:300px;
-    padding:30px;
-    background:#0e1323;
+    padding:40px;
+    background:#0f1526;
     border-left:1px solid rgba(255,255,255,0.05);
 }
 
 .card{
-    background:#141a2f;
+    background:#141b2d;
     padding:20px;
-    border-radius:15px;
+    border-radius:18px;
     margin-bottom:20px;
+}
+
+.card h3{
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.card p{
+    font-size:14px;
+    color:#a1a1aa;
+    margin-bottom:8px;
 }
 
 @keyframes fadeIn{
