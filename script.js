@@ -270,3 +270,11 @@ async function toggleLike(postId) {
 if (window.location.pathname.includes("home.html")) {
     cargarPosts();
 }
+if (window.location.pathname.includes("home.html")) {
+    cargarPosts();
+
+    // ✅ Actualizar feed automáticamente cada 5 segundos
+    setInterval(() => {
+        cargarPosts();
+    }, 5000);
+}
