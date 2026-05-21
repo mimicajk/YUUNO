@@ -11,10 +11,13 @@ const createPost = async (req, res) => {
             return res.status(400).json({ message: "Contenido requerido" });
         }
 
-        const post = await Post.create({
+        let post = await Post.create({
             user: req.user._id,
             content,
         });
+
+        // ✅ Importantísimo: popular usuario antes de devolver
+        post = await post.populate("user", "username");
 
         res.status(201).json(post);
 
