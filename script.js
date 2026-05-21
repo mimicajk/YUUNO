@@ -147,7 +147,7 @@ async function crearPost() {
 }
 
 // =============================
-// INSERTAR POST SIN RECARGAR
+// INSERTAR POST EN DOM
 // =============================
 
 function insertarPostEnDOM(post, prepend = false) {
@@ -215,7 +215,7 @@ async function cargarPosts() {
 }
 
 // =============================
-// TOGGLE LIKE SIN REFRESH
+// LIKE INSTANTÁNEO (OPTIMISTIC UI)
 // =============================
 
 async function toggleLike(postId) {
@@ -224,6 +224,21 @@ async function toggleLike(postId) {
     const likeBtn = document.querySelector(`.like-btn[data-id="${postId}"]`);
     const likeCount = likeBtn.querySelector(".like-count");
 
+    const isLiked = likeBtn.classList.contains("liked");
+    let currentCount = parseInt(likeCount.textContent);
+
+    // ✅ Cambiar visual inmediatamente
+    if (isLiked) {
+        likeBtn.classList.remove("liked");
+        likeBtn.firstChild.textContent = "🤍 ";
+        likeCount.textContent = currentCount - 1;
+    } else {
+        likeBtn.classList.add("liked");
+        likeBtn.firstChild.textContent = "❤️ ";
+        likeCount.textContent = currentCount + 1;
+    }
+
+    // ✅ Enviar al backend
     try {
         const response = await fetch(`${API_URL}/posts/${postId}/like`, {
             method: "PUT",
@@ -232,26 +247,24 @@ async function toggleLike(postId) {
             },
         });
 
-        const data = await response.json();
-        if (!response.ok) return;
-
-        likeCount.textContent = data.totalLikes;
-
-        if (likeBtn.classList.contains("liked")) {
-            likeBtn.classList.remove("liked");
-            likeBtn.firstChild.textContent = "🤍 ";
-        } else {
-            likeBtn.classList.add("liked");
-            likeBtn.firstChild.textContent = "❤️ ";
-        }
+        if (!response.ok) throw new Error();
 
     } catch (error) {
-        console.log("Error al procesar like");
+        // ❌ Revertir si falla
+        if (isLiked) {
+            likeBtn.classList.add("liked");
+            likeBtn.firstChild.textContent = "❤️ ";
+            likeCount.textContent = currentCount;
+        } else {
+            likeBtn.classList.remove("liked");
+            likeBtn.firstChild.textContent = "🤍 ";
+            likeCount.textContent = currentCount;
+        }
     }
 }
 
 // =============================
-// CARGAR AL ENTRAR A HOME
+// CARGAR EN HOME
 // =============================
 
 if (window.location.pathname.includes("home.html")) {
