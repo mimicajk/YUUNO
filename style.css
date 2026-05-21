@@ -637,3 +637,15 @@ body{
 .like-btn.liked {
     color: #ff3b5c;
 }
+.like-btn {
+    cursor: pointer;
+    transition: transform 0.15s ease, color 0.2s ease;
+}
+
+.like-btn:active {
+    transform: scale(1.25);
+}
+
+.like-btn.liked {
+    color: #ff3b5c;
+}

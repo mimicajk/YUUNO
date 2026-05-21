@@ -1,5 +1,7 @@
 const API_URL = "https://yuuno-backend-mimicajk.onrender.com/api";
 
+let loadedPostIds = new Set();
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // =============================
@@ -140,6 +142,7 @@ async function crearPost() {
         postInput.value = "";
 
         insertarPostEnDOM(newPost, true);
+        loadedPostIds.add(newPost._id);
 
     } catch (error) {
         alert("Error creando post");
@@ -162,10 +165,10 @@ function insertarPostEnDOM(post, prepend = false) {
     postElement.innerHTML = `
         <div class="post-header">
             <div class="post-avatar">
-                ${post.user?.username?.charAt(0).toUpperCase() || currentUser.username.charAt(0).toUpperCase()}
+                ${post.user?.username?.charAt(0).toUpperCase()}
             </div>
             <div class="post-info">
-                <h4>${post.user?.username || currentUser.username}</h4>
+                <h4>${post.user?.username}</h4>
                 <span>${new Date(post.createdAt).toLocaleString()}</span>
             </div>
         </div>
@@ -190,7 +193,7 @@ function insertarPostEnDOM(post, prepend = false) {
 }
 
 // =============================
-// CARGAR POSTS
+// CARGAR POSTS SIN BORRAR TODO
 // =============================
 
 async function cargarPosts() {
@@ -204,10 +207,13 @@ async function cargarPosts() {
         });
 
         const posts = await response.json();
-        const feed = document.getElementById("feed");
-        feed.innerHTML = "";
 
-        posts.forEach(post => insertarPostEnDOM(post));
+        posts.forEach(post => {
+            if (!loadedPostIds.has(post._id)) {
+                insertarPostEnDOM(post, true);
+                loadedPostIds.add(post._id);
+            }
+        });
 
     } catch (error) {
         console.log("Error cargando posts");
@@ -215,7 +221,7 @@ async function cargarPosts() {
 }
 
 // =============================
-// LIKE INSTANTÁNEO (OPTIMISTIC UI)
+// LIKE INSTANTÁNEO
 // =============================
 
 async function toggleLike(postId) {
@@ -227,7 +233,7 @@ async function toggleLike(postId) {
     const isLiked = likeBtn.classList.contains("liked");
     let currentCount = parseInt(likeCount.textContent);
 
-    // ✅ Cambiar visual inmediatamente
+    // UI inmediata
     if (isLiked) {
         likeBtn.classList.remove("liked");
         likeBtn.firstChild.textContent = "🤍 ";
@@ -238,7 +244,6 @@ async function toggleLike(postId) {
         likeCount.textContent = currentCount + 1;
     }
 
-    // ✅ Enviar al backend
     try {
         const response = await fetch(`${API_URL}/posts/${postId}/like`, {
             method: "PUT",
@@ -250,7 +255,7 @@ async function toggleLike(postId) {
         if (!response.ok) throw new Error();
 
     } catch (error) {
-        // ❌ Revertir si falla
+        // revertir si falla
         if (isLiked) {
             likeBtn.classList.add("liked");
             likeBtn.firstChild.textContent = "❤️ ";
@@ -264,16 +269,12 @@ async function toggleLike(postId) {
 }
 
 // =============================
-// CARGAR EN HOME
+// AUTO ACTUALIZAR FEED
 // =============================
 
 if (window.location.pathname.includes("home.html")) {
     cargarPosts();
-}
-if (window.location.pathname.includes("home.html")) {
-    cargarPosts();
 
-    // ✅ Actualizar feed automáticamente cada 5 segundos
     setInterval(() => {
         cargarPosts();
     }, 5000);
