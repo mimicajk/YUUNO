@@ -4,31 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - YUUNO</title>
-<link rel="stylesheet" href="style.css">
+
+<!-- SOLO USA auth.css -->
+<link rel="stylesheet" href="auth.css">
+
 </head>
 
-<body class="auth-layout">
+<body class="login-body">
 
-<div class="auth-left">
-    <div class="auth-glow"></div>
-    <h1 class="auth-brand">YUUNO</h1>
-    <p class="auth-tagline">
-        Connect, share and discover your vibe in a new modern social experience.
-    </p>
-</div>
+<div class="login-container">
 
-<div class="auth-right">
-    <div class="auth-form-card">
-        <h2>Bienvenido de nuevo</h2>
+    <!-- LADO IZQUIERDO -->
+    <div class="login-left">
 
-        <form id="loginForm">
-            <input type="email" placeholder="Correo electrónico" required>
-            <input type="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar sesión</button>
-        </form>
+        <div class="glow-circle"></div>
 
-        <p>¿No tienes cuenta? <a href="register.html">Crear cuenta</a></p>
+        <h1 class="login-logo">YUUNO</h1>
+
+        <p class="login-text">
+            Connect, share and discover your vibe in a new modern social experience.
+        </p>
+
     </div>
+
+    <!-- LADO DERECHO -->
+    <div class="login-right">
+
+        <div class="login-card">
+
+            <h2>Bienvenido de nuevo</h2>
+
+            <form id="loginForm">
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+
+            <p>¿No tienes cuenta? 
+                <a href="register.html">Crear cuenta</a>
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
 
 <script src="script.js"></script>
