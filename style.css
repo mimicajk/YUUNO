@@ -316,3 +316,87 @@ body{
     color:#B026FF;
     text-decoration:none;
 }
+/* ========================= */
+/* AUTH STRUCTURE SIN CAMBIAR FONDO */
+/* ========================= */
+
+.auth-layout{
+    display:flex;
+    height:100vh;
+}
+
+.auth-left{
+    flex:1;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.auth-glow{
+    position:absolute;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle,#B026FF 0%, transparent 60%);
+    filter:blur(120px);
+    opacity:0.5;
+}
+
+.auth-brand{
+    font-size:80px;
+    font-weight:900;
+    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
+    -webkit-background-clip:text;
+    color:transparent;
+    z-index:2;
+}
+
+.auth-tagline{
+    margin-top:20px;
+    color:#9CA3AF;
+    text-align:center;
+    max-width:400px;
+    z-index:2;
+}
+
+.auth-right{
+    width:400px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.auth-form-card{
+    width:100%;
+    padding:40px;
+    background:rgba(20,25,45,0.85);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.05);
+}
+
+.auth-form-card form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.auth-form-card input{
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    background:#111827;
+    color:white;
+}
+
+.auth-form-card button{
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+}
