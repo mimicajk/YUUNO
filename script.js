@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let isDeleting = false;
 
         function typeLoop() {
-
             if (!isDeleting) {
                 typingElement.textContent = text.substring(0, index);
                 index++;
@@ -22,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         isDeleting = true;
                     }, 5000);
                 }
-
             } else {
                 typingElement.textContent = text.substring(0, index);
                 index--;
@@ -40,63 +38,83 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // =============================
-    // REGISTRO
+    // REGISTRO REAL (BACKEND)
     // =============================
 
     const registerForm = document.getElementById("registerForm");
 
     if (registerForm) {
-        registerForm.addEventListener("submit", function (e) {
+        registerForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
             const username = registerForm.querySelector("input[type='text']").value;
             const email = registerForm.querySelector("input[type='email']").value;
             const password = registerForm.querySelector("input[type='password']").value;
 
-            const user = {
-                username,
-                email,
-                password
-            };
+            try {
+                const response = await fetch("http://localhost:5000/api/auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                });
 
-            localStorage.setItem("yuunoUser", JSON.stringify(user));
+                const data = await response.json();
 
-            alert("Cuenta creada correctamente ✅");
+                if (!response.ok) {
+                    alert(data.message);
+                    return;
+                }
 
-            window.location.href = "login.html";
+                alert("Cuenta creada correctamente ✅");
+                window.location.href = "login.html";
+
+            } catch (error) {
+                alert("Error conectando con el servidor");
+            }
         });
     }
 
     // =============================
-    // LOGIN
+    // LOGIN REAL (BACKEND + JWT)
     // =============================
 
     const loginForm = document.getElementById("loginForm");
 
     if (loginForm) {
-        loginForm.addEventListener("submit", function (e) {
+        loginForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
             const email = loginForm.querySelector("input[type='email']").value;
             const password = loginForm.querySelector("input[type='password']").value;
 
-            const savedUser = JSON.parse(localStorage.getItem("yuunoUser"));
+            try {
+                const response = await fetch("http://localhost:5000/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
 
-            if (!savedUser) {
-                alert("No existe una cuenta registrada.");
-                return;
-            }
+                const data = await response.json();
 
-            if (email === savedUser.email && password === savedUser.password) {
+                if (!response.ok) {
+                    alert(data.message);
+                    return;
+                }
 
-                localStorage.setItem("yuunoSession", "active");
+                // Guardar token y usuario
+                localStorage.setItem("yuunoToken", data.token);
+                localStorage.setItem("yuunoUser", JSON.stringify(data.user));
 
-                alert("Bienvenido " + savedUser.username + " 🚀");
+                alert("Login exitoso ✅");
 
                 window.location.href = "home.html";
 
-            } else {
-                alert("Correo o contraseña incorrectos ❌");
+            } catch (error) {
+                alert("Error conectando con el servidor");
             }
         });
     }

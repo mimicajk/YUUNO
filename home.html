@@ -3,74 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>YUUNO - Home</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="home-page">
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-logo">YUUNO</div>
-        <div class="navbar-links">
-            <a href="#" class="active">🏠 Inicio</a>
-            <a href="#">💬 Chat</a>
-            <a href="#"> Perfil</a>
-        </div>
-        <div class="user-info">
-            <span id="usernameDisplay"></span>
-           <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
-        </div>
-    </nav>
+<!-- ============================= -->
+<!-- NAVBAR -->
+<!-- ============================= -->
+<nav class="navbar">
+    <div class="navbar-logo">YUUNO</div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="home-content">
-        
-        <!-- CREAR POST -->
-        <div class="create-post">
-            <div class="post-avatar" id="userAvatar">U</div>
-            <input type="text" id="postInput" placeholder="¿Qué estás pensando?">
-            <button onclick="crearPost()" class="btn-post">Publicar</button>
-        </div>
-
-        <!-- FEED -->
-        <div class="feed" id="feed">
-            <!-- Los posts se cargarán aquí -->
-        </div>
-
+    <div class="navbar-links">
+        <a href="#" class="active">🏠 Inicio</a>
+        <a href="#">💬 Chat</a>
+        <a href="#">👤 Perfil</a>
     </div>
 
-<script src="script.js"></script>
-<script>
-    const session = localStorage.getItem("yuunoSession");
+    <div class="user-info">
+        <span id="usernameDisplay"></span>
+        <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
+    </div>
+</nav>
 
-    if (!session) {
+<!-- ============================= -->
+<!-- CONTENIDO PRINCIPAL -->
+<!-- ============================= -->
+<div class="home-content">
+    
+    <div class="create-post">
+        <div class="post-avatar" id="userAvatar">U</div>
+        <input type="text" id="postInput" placeholder="¿Qué estás pensando?">
+        <button onclick="crearPost()" class="btn-post">Publicar</button>
+    </div>
+
+    <div class="feed" id="feed">
+        <!-- Posts aquí -->
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+<!-- ============================= -->
+<!-- PROTECCIÓN + USUARIO REAL -->
+<!-- ============================= -->
+<script>
+    const token = localStorage.getItem("yuunoToken");
+
+    if (!token) {
         window.location.href = "login.html";
+    } else {
+        fetch("http://localhost:5000/api/auth/me", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token,
+            }
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Token inválido");
+            }
+            return res.json();
+        })
+        .then(data => {
+            const usernameDisplay = document.getElementById("usernameDisplay");
+            const userAvatar = document.getElementById("userAvatar");
+
+            if (usernameDisplay) {
+                usernameDisplay.textContent = data.user.username;
+            }
+
+            if (userAvatar) {
+                userAvatar.textContent = data.user.username.charAt(0).toUpperCase();
+            }
+        })
+        .catch(() => {
+            localStorage.removeItem("yuunoToken");
+            localStorage.removeItem("yuunoUser");
+            window.location.href = "login.html";
+        });
     }
 </script>
 
-
- <!-- MOSTRAR NOMBRE DEL USUARIO -->
-    <script>
-        const user = JSON.parse(localStorage.getItem("yuunoUser"));
-        const usernameDisplay = document.getElementById("usernameDisplay");
-
-        if (user && usernameDisplay) {
-            usernameDisplay.textContent = user.username;
-        }
-    </script>
-
-    <script>
+<!-- ============================= -->
+<!-- LOGOUT -->
+<!-- ============================= -->
+<script>
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (logoutBtn) {
         logoutBtn.addEventListener("click", function () {
-
-            // Eliminar sesión
-            localStorage.removeItem("yuunoSession");
-
-            // Redirigir al login
+            localStorage.removeItem("yuunoToken");
+            localStorage.removeItem("yuunoUser");
             window.location.href = "login.html";
         });
     }
