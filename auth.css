@@ -2,7 +2,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .login-body{
@@ -16,7 +16,7 @@
     height:100vh;
 }
 
-/* LEFT */
+/* LADO IZQUIERDO */
 .login-left{
     flex:1;
     display:flex;
@@ -28,33 +28,36 @@
 
 .glow-circle{
     position:absolute;
-    width:600px;
-    height:600px;
-    background:radial-gradient(circle,#B026FF 0%, transparent 60%);
-    filter:blur(120px);
-    opacity:0.6;
+    width:500px;
+    height:500px;
+    background:radial-gradient(circle,#7c3aed 0%, transparent 65%);
+    filter:blur(140px);
+    opacity:0.35;
 }
 
 .login-logo{
-    font-size:80px;
-    font-weight:900;
-    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
+    font-size:64px;
+    font-weight:600; /* menos grueso */
+    letter-spacing:4px;
+    background:linear-gradient(90deg,#9333EA,#3B82F6);
     -webkit-background-clip:text;
     color:transparent;
     z-index:2;
 }
 
 .login-text{
-    margin-top:20px;
+    margin-top:18px;
     color:#9CA3AF;
-    max-width:400px;
+    max-width:380px;
     text-align:center;
+    font-size:14px;
+    line-height:1.5;
     z-index:2;
 }
 
-/* RIGHT */
+/* LADO DERECHO */
 .login-right{
-    width:450px;
+    width:420px;
     background:#111827;
     display:flex;
     align-items:center;
@@ -68,38 +71,46 @@
 
 .login-card h2{
     margin-bottom:20px;
+    font-weight:500;
 }
 
 .login-card form{
     display:flex;
     flex-direction:column;
-    gap:15px;
+    gap:14px;
 }
 
 .login-card input{
     padding:12px;
-    border-radius:10px;
+    border-radius:12px;
     border:none;
     background:#1F2937;
     color:white;
+    font-size:14px;
 }
 
 .login-card button{
     padding:12px;
-    border-radius:10px;
+    border-radius:12px;
     border:none;
-    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
+    background:linear-gradient(90deg,#9333EA,#3B82F6);
     color:white;
     cursor:pointer;
-    font-weight:bold;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.login-card button:hover{
+    opacity:0.9;
 }
 
 .login-card p{
-    margin-top:15px;
+    margin-top:16px;
+    font-size:13px;
     color:#9CA3AF;
 }
 
 .login-card a{
-    color:#00BFFF;
+    color:#9333EA;
     text-decoration:none;
 }
