@@ -127,7 +127,7 @@ async function crearPost() {
     }
 
     try {
-        await fetch(`${API_URL}/posts`, {
+        const response = await fetch(`${API_URL}/posts`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -136,8 +136,10 @@ async function crearPost() {
             body: JSON.stringify({ content }),
         });
 
+        const newPost = await response.json();
         postInput.value = "";
-        cargarPosts();
+
+        insertarPostEnDOM(newPost, true);
 
     } catch (error) {
         alert("Error creando post");
@@ -145,10 +147,51 @@ async function crearPost() {
 }
 
 // =============================
-// CARGAR POSTS
+// INSERTAR POST SIN RECARGAR
 // =============================
 
-let currentUserId = null;
+function insertarPostEnDOM(post, prepend = false) {
+
+    const feed = document.getElementById("feed");
+    const currentUser = JSON.parse(localStorage.getItem("yuunoUser"));
+    const liked = post.likes?.includes(currentUser?.id);
+
+    const postElement = document.createElement("div");
+    postElement.classList.add("post");
+
+    postElement.innerHTML = `
+        <div class="post-header">
+            <div class="post-avatar">
+                ${post.user?.username?.charAt(0).toUpperCase() || currentUser.username.charAt(0).toUpperCase()}
+            </div>
+            <div class="post-info">
+                <h4>${post.user?.username || currentUser.username}</h4>
+                <span>${new Date(post.createdAt).toLocaleString()}</span>
+            </div>
+        </div>
+        <div class="post-content">
+            ${post.content}
+        </div>
+        <div class="post-actions">
+            <div class="post-action like-btn ${liked ? 'liked' : ''}" 
+                 data-id="${post._id}" 
+                 onclick="toggleLike('${post._id}')">
+                ${liked ? '❤️' : '🤍'} 
+                <span class="like-count">${post.likes?.length || 0}</span>
+            </div>
+        </div>
+    `;
+
+    if (prepend) {
+        feed.prepend(postElement);
+    } else {
+        feed.appendChild(postElement);
+    }
+}
+
+// =============================
+// CARGAR POSTS
+// =============================
 
 async function cargarPosts() {
     const token = localStorage.getItem("yuunoToken");
@@ -164,44 +207,7 @@ async function cargarPosts() {
         const feed = document.getElementById("feed");
         feed.innerHTML = "";
 
-        if (!currentUserId) {
-            const user = JSON.parse(localStorage.getItem("yuunoUser"));
-            if (user) currentUserId = user.id;
-        }
-
-        posts.forEach(post => {
-            const liked = post.likes.some(
-                id => id.toString() === currentUserId
-            );
-
-            const postElement = document.createElement("div");
-            postElement.classList.add("post");
-
-            postElement.innerHTML = `
-                <div class="post-header">
-                    <div class="post-avatar">
-                        ${post.user.username.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="post-info">
-                        <h4>${post.user.username}</h4>
-                        <span>${new Date(post.createdAt).toLocaleString()}</span>
-                    </div>
-                </div>
-                <div class="post-content">
-                    ${post.content}
-                </div>
-                <div class="post-actions">
-                    <div class="post-action like-btn ${liked ? 'liked' : ''}" 
-                         data-id="${post._id}" 
-                         onclick="toggleLike('${post._id}')">
-                        ${liked ? '❤️' : '🤍'} 
-                        <span class="like-count">${post.likes.length}</span>
-                    </div>
-                </div>
-            `;
-
-            feed.appendChild(postElement);
-        });
+        posts.forEach(post => insertarPostEnDOM(post));
 
     } catch (error) {
         console.log("Error cargando posts");
@@ -209,11 +215,14 @@ async function cargarPosts() {
 }
 
 // =============================
-// TOGGLE LIKE (SIN REFRESH)
+// TOGGLE LIKE SIN REFRESH
 // =============================
 
 async function toggleLike(postId) {
     const token = localStorage.getItem("yuunoToken");
+
+    const likeBtn = document.querySelector(`.like-btn[data-id="${postId}"]`);
+    const likeCount = likeBtn.querySelector(".like-count");
 
     try {
         const response = await fetch(`${API_URL}/posts/${postId}/like`, {
@@ -226,15 +235,14 @@ async function toggleLike(postId) {
         const data = await response.json();
         if (!response.ok) return;
 
-        const likeBtn = document.querySelector(`.like-btn[data-id="${postId}"]`);
-        const likeCount = likeBtn.querySelector(".like-count");
+        likeCount.textContent = data.totalLikes;
 
         if (likeBtn.classList.contains("liked")) {
             likeBtn.classList.remove("liked");
-            likeBtn.innerHTML = `🤍 <span class="like-count">${data.totalLikes}</span>`;
+            likeBtn.firstChild.textContent = "🤍 ";
         } else {
             likeBtn.classList.add("liked");
-            likeBtn.innerHTML = `❤️ <span class="like-count">${data.totalLikes}</span>`;
+            likeBtn.firstChild.textContent = "❤️ ";
         }
 
     } catch (error) {
@@ -243,7 +251,7 @@ async function toggleLike(postId) {
 }
 
 // =============================
-// CARGAR POSTS EN HOME
+// CARGAR AL ENTRAR A HOME
 // =============================
 
 if (window.location.pathname.includes("home.html")) {
