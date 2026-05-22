@@ -323,20 +323,19 @@ body{
 .auth-tagline{
     margin-top:25px;
     color:#9CA3AF;
-    max-width:420px;
+    max-width:620px;
     text-align:center;
     font-size:18px;
     line-height:1.6;
     z-index:2;
 
     overflow:hidden;
-    white-space:nowrap;
     border-right:2px solid #B026FF;
 
     width:0;
 
     animation:
-    typing 8s steps(60,end) infinite,
+    typing 8s steps(90,end) infinite,
     blink 0.8s infinite;
 }
 
