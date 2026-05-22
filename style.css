@@ -12,6 +12,8 @@ body{
         linear-gradient(135deg, #06080F 0%, #05070D 50%, #03050A 100%);
     color:#ffffff;
     min-height:100vh;
+    background-size:200% 200%;
+    animation:bgMove 20s ease infinite;
 }
 
 /* ========================= */
@@ -47,6 +49,7 @@ body{
     color:transparent;
     text-shadow:0 0 30px rgba(176,38,255,0.5);
     letter-spacing:2px;
+    animation:logoPulse 6s ease-in-out infinite;
 }
 
 .menu{
@@ -151,6 +154,12 @@ body{
     margin-bottom:25px;
     border:1px solid rgba(255,255,255,0.05);
     box-shadow:0 15px 50px rgba(0,0,0,0.5);
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.post:hover{
+    transform:translateY(-3px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
 }
 
 .post-header{
@@ -226,6 +235,12 @@ body{
     border-radius:22px;
     margin-bottom:20px;
     border:1px solid rgba(255,255,255,0.05);
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
 }
 
 .card h3{
@@ -240,6 +255,7 @@ body{
 }
 
 /* SCROLL */
+
 .feed-container::-webkit-scrollbar{
     width:6px;
 }
@@ -247,148 +263,6 @@ body{
 .feed-container::-webkit-scrollbar-thumb{
     background:#B026FF;
     border-radius:10px;
-}
-/* ========================= */
-/* AUTH PAGES */
-/* ========================= */
-
-.auth-container{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-}
-
-.auth-card{
-    background:rgba(20,25,45,0.9);
-    backdrop-filter:blur(20px);
-    padding:40px;
-    border-radius:24px;
-    width:350px;
-    text-align:center;
-    border:1px solid rgba(255,255,255,0.05);
-}
-
-.auth-logo{
-    font-size:36px;
-    font-weight:900;
-    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
-    -webkit-background-clip:text;
-    color:transparent;
-    margin-bottom:20px;
-}
-
-.auth-card h2{
-    margin-bottom:20px;
-}
-
-.auth-card form{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-.auth-card input{
-    padding:12px;
-    border-radius:12px;
-    border:none;
-    background:#111827;
-    color:white;
-}
-
-.auth-card button{
-    padding:12px;
-    border-radius:12px;
-    border:none;
-    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
-    color:white;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.auth-card p{
-    margin-top:15px;
-    font-size:14px;
-    color:#9CA3AF;
-}
-
-.auth-card a{
-    color:#B026FF;
-    text-decoration:none;
-}
-/* ========================= */
-/* AUTH STRUCTURE SIN CAMBIAR FONDO */
-/* ========================= */
-
-.auth-layout{
-    display:flex;
-    height:100vh;
-}
-
-.auth-left{
-    flex:1;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-}
-
-.auth-glow{
-    position:absolute;
-    width:600px;
-    height:600px;
-    background:radial-gradient(circle,#B026FF 0%, transparent 60%);
-    filter:blur(120px);
-    opacity:0.5;
-}
-
-.auth-brand{
-    font-size:80px;
-    font-weight:900;
-    background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
-    -webkit-background-clip:text;
-    color:transparent;
-    z-index:2;
-}
-
-.auth-tagline{
-    margin-top:20px;
-    color:#9CA3AF;
-    text-align:center;
-    max-width:400px;
-    z-index:2;
-}
-
-.auth-right{
-    width:400px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.auth-form-card{
-    width:100%;
-    padding:40px;
-    background:rgba(20,25,45,0.85);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.05);
-}
-
-.auth-form-card form{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-.auth-form-card input{
-    padding:12px;
-    border-radius:12px;
-    border:none;
-    background:#111827;
-    color:white;
 }
 
 /* ========================= */
@@ -403,11 +277,13 @@ body{
 /* LEFT SIDE */
 
 .auth-left{
-    flex:1;
+    width:62%;
+
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
+
     position:relative;
     overflow:hidden;
 }
@@ -457,7 +333,7 @@ body{
 /* RIGHT PANEL */
 
 .auth-right{
-    width:430px;
+    width:38%;
 
     border-left:1px solid rgba(255,255,255,0.08);
 
@@ -470,14 +346,15 @@ body{
     justify-content:center;
     align-items:center;
 
-    padding:40px;
+    padding-left:70px;
+    padding-right:70px;
 }
 
 /* FORM CARD */
 
 .auth-form-card{
     width:100%;
-    max-width:340px;
+    max-width:420px;
 }
 
 /* TITLE */
@@ -551,67 +428,50 @@ body{
     text-decoration:none;
 }
 
-@keyframes bgMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* ========================= */
+/* ANIMATIONS */
+/* ========================= */
+
+@keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
 
-body {
-    background-size: 200% 200%;
-    animation: bgMove 20s ease infinite;
-}
-.post,
-.card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+@keyframes logoPulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.03);}
+    100%{transform:scale(1);}
 }
 
-.post:hover,
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-}
-@keyframes logoPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
-}
+/* ========================= */
+/* LOGOUT BUTTON */
+/* ========================= */
 
-.logo {
-    animation: logoPulse 6s ease-in-out infinite;
-}
 #logoutBtn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
 
-    position: fixed;
+    padding:14px 20px;
 
-    bottom: 20px;
+    border:none;
+    border-radius:16px;
 
-    right: 20px;
+    background:linear-gradient(90deg,#9333ea,#06b6d4);
 
-    padding: 14px 20px;
+    color:white;
+    font-weight:bold;
 
-    border: none;
+    cursor:pointer;
 
-    border-radius: 16px;
+    box-shadow:0 0 20px rgba(147,51,234,0.4);
 
-    background: linear-gradient(90deg,#9333ea,#06b6d4);
+    z-index:999;
 
-    color: white;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    box-shadow: 0 0 20px rgba(147,51,234,0.4);
-
-    z-index: 999;
-
-    transition: 0.3s;
-
+    transition:0.3s;
 }
 
 #logoutBtn:hover{
-
-    transform: scale(1.05);
-
+    transform:scale(1.05);
 }
