@@ -323,16 +323,20 @@ body{
 .auth-tagline{
     margin-top:25px;
     color:#9CA3AF;
-    max-width:620px;
+
+    width:620px;
+    height:30px;
+
     text-align:center;
     font-size:18px;
     line-height:1.6;
+
     z-index:2;
 
     overflow:hidden;
-    border-right:2px solid #B026FF;
+    white-space:nowrap;
 
-    width:0;
+    border-right:2px solid #B026FF;
 
     animation:
     typing 8s steps(90,end) infinite,
@@ -487,31 +491,23 @@ body{
 @keyframes typing{
 
     0%{
-        width:0;
+        clip-path: inset(0 100% 0 0);
         opacity:1;
     }
 
     40%{
-        width:100%;
+        clip-path: inset(0 0 0 0);
         opacity:1;
     }
 
     70%{
-        width:100%;
+        clip-path: inset(0 0 0 0);
         opacity:1;
     }
 
     100%{
-        width:0;
+        clip-path: inset(0 100% 0 0);
         opacity:0;
-    }
-
-}
-
-@keyframes blink{
-
-    50%{
-        border-color:transparent;
     }
 
 }
