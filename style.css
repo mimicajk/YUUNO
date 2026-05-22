@@ -307,17 +307,18 @@ body{
 /* BRAND */
 
 .auth-brand{
-    font-size:110px;
-    font-weight:800;
-    letter-spacing:8px;
+    font-size:95px;
+    font-weight:500;
+    letter-spacing:3px;
 
     background:linear-gradient(90deg,#B026FF,#4F46FF,#00BFFF);
     -webkit-background-clip:text;
     color:transparent;
 
+    text-shadow:0 0 25px rgba(176,38,255,0.25);
+
     z-index:2;
 }
-
 /* TAGLINE */
 
 .auth-tagline{
