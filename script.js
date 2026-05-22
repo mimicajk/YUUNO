@@ -40,9 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             e.preventDefault();
 
-            const email = document.querySelector('input[type="email"]').value;
+            const email = document.getElementById("loginEmail").value;
 
-            const password = document.querySelector('input[type="password"]').value;
+            const password = document.getElementById("loginPassword").value;
 
             if(email && password){
 
@@ -50,6 +50,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("yuunoUser", email);
 
                 // entrar a la app
+                window.location.href = "home.html";
+
+            } else {
+
+                alert("Completa los campos");
+
+            }
+
+        });
+
+    }
+
+    // =============================
+    // REGISTER
+    // =============================
+    const registerForm = document.getElementById("registerForm");
+
+    if(registerForm){
+
+        registerForm.addEventListener("submit", (e) => {
+
+            e.preventDefault();
+
+            const username = document.getElementById("registerUsername").value;
+
+            const email = document.getElementById("registerEmail").value;
+
+            const password = document.getElementById("registerPassword").value;
+
+            if(username && email && password){
+
+                // guardar usuario temporal
+                localStorage.setItem("yuunoUser", username);
+
+                // entrar automáticamente
                 window.location.href = "home.html";
 
             } else {
@@ -192,10 +227,8 @@ function insertarPost(post) {
 
     if(!feed) return;
 
-    // usuario actual
     const currentUser = localStorage.getItem("yuunoUser");
 
-    // likes temporales
     const liked = false;
 
     const postElement = document.createElement("div");
